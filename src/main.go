@@ -1,13 +1,13 @@
 package main
 
 import (
-	"io"
-	"fmt"
 	"bytes"
-	"log"
-	"flag"
-	"net/http"
 	"encoding/json"
+	"flag"
+	"fmt"
+	"io"
+	"log"
+	"net/http"
 	"strings"
 )
 
@@ -15,15 +15,14 @@ import (
 // http://apidocs.mailchimp.com/api/2.0/lists/subscribe.php
 
 type MCEmail struct {
-	Email string				`json:"email"`
+	Email string `json:"email"`
 }
 
 type MCRequest struct {
 	EmailInfo MCEmail `json:"email"`
-	Id string					`json:"id"`
-	ApiKey string			`json:"apikey"`
+	Id        string  `json:"id"`
+	ApiKey    string  `json:"apikey"`
 }
-
 
 // Example responses
 // {status: "error", code: -100, name: "ValidationError", error: "An email address must contain a single @"}
@@ -33,21 +32,21 @@ type MCRequest struct {
 var (
 	mc_api_key *string = flag.String("mc-api-key", "", "Mailchimp API key")
 	mc_list_id *string = flag.String("mc-list-id", "", "Mailchimp list id")
-	listen		 *string = flag.String("l", "127.0.0.1:3001", "Address to listen on")
+	listen     *string = flag.String("l", "127.0.0.1:3001", "Address to listen on")
 )
 
 func mc_subscribe(email string) (*http.Response, error) {
 
 	mcr := MCRequest{
-		EmailInfo: MCEmail{ Email: email },
-		Id: *mc_list_id,
-		ApiKey: *mc_api_key,
+		EmailInfo: MCEmail{Email: email},
+		Id:        *mc_list_id,
+		ApiKey:    *mc_api_key,
 	}
 
 	parts := strings.Split(*mc_api_key, "-")
 	dc := parts[1]
 	path := "lists/subscribe.json"
-	api_url :=  fmt.Sprintf("https://%s.api.mailchimp.com/2.0/%s", dc, path)
+	api_url := fmt.Sprintf("https://%s.api.mailchimp.com/2.0/%s", dc, path)
 
 	data, err := json.Marshal(mcr)
 
@@ -71,7 +70,7 @@ func subscribe(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	r, err:= mc_subscribe(email)
+	r, err := mc_subscribe(email)
 
 	if err == nil {
 		log.Println("subscribing", email)
@@ -92,7 +91,7 @@ func subscribeMux(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Location", "/")
 		w.WriteHeader(302)
 	case "POST":
-		subscribe(w,r)
+		subscribe(w, r)
 	}
 }
 
@@ -101,9 +100,9 @@ func main() {
 
 	staticServer := http.FileServer(http.Dir("./public/"))
 
-	http.HandleFunc("/",func(w http.ResponseWriter, r *http.Request){ http.ServeFile(w,r, "./public/index.html") })
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) { http.ServeFile(w, r, "./public/index.html") })
 	http.Handle("/js/", staticServer)
-	http.Handle("/css/",staticServer)
+	http.Handle("/css/", staticServer)
 
 	http.HandleFunc("/subscriptions/", subscribeMux)
 
@@ -111,4 +110,3 @@ func main() {
 
 	log.Fatal(http.ListenAndServe(*listen, nil))
 }
-
