@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC
+    "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN"
+    "http://www.w3.org/2002/04/xhtml-math-svg/xhtml-math-svg.dtd">
+<html xml:lang='en' xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/1999/xhtml'>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <meta content='application/xhtml+xml;charset=utf-8' http-equiv='Content-type' /><title></title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap-theme.min.css">
+
+    <!--http://bootswatch.com/simplex/ theme-->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+    <style type="text/css" media="all">
+
+      #footer {
+        margin: 5em 0;
+      }
+
+      form input {
+        font-size: 2em;
+      }
+    </style>
+  </head>
+<body>
+  <div class="container">
+    <div class="jumbotron">
+      <h2>Go Landing Page Mailchimp</h2>
+      <p>
+        Golang powered Mailchimp based landing-page for your next idea
+      </p>
+    </div>
+
+    <h1>Problem</h1>
+
+    <ul>
+      <li>Do you have an idea and want to measure potential audience?</li>
+      <li>Are you sure if an idea is worth investing in?</li>
+      <li>Will your landing page survive once posted on HN?</li>
+      <li>How to get started quickly?</li>
+    </ul>
+
+    <h1>Go Landing Page Mailchimp</h1>
+
+    <ul>
+      <li>Briefly explain your idea</li>
+      <li>Let interested people subscribe</li>
+      <li>Mailchimp gives you 2000 subscriptions for free</li>
+      <li>Golang solution is highly concurrent to survive slashdot effect</li>
+      <li>Small memory footprint lets start small</li>
+      <li>Have an idea - start now, it's free!</li>
+    </ul>
+
+    <div id='subscribe'>
+      
+      <h1>Interested?</h1>
+
+      <p>Check out <a href="https://github.com/gmarik/go-landing-page-mailchimp">source code on github</a></p>
+
+      <div class="container">
+
+        <form class="subscribe form-horizontal" action="/subscriptions/" method="post">
+          <p>
+            &nbsp;
+            <span class="msg err text-danger hidden"></span>
+            <span class="msg success text-success hidden"></span>
+          </p>
+
+          <input type="text" name="email" value="" placeholder="email address"/>
+          <input type="submit" value="Subscribe" class="btn-primary"/>
+        </form>
+      </div>
+    </div>
+
+    <p id="footer">
+      gmarik | 2014 | BTC: <a href="bitcoing://1DCP5x4wPqaqFsnLgNucv8h7PrmKAb6P5e">1DCP5x4wPqaqFsnLgNucv8h7PrmKAb6P5e</a>
+    </p>
+
+  </div>
+</body>
+  <script>
+    $(function(){
+
+      var $err = $('#subscribe .msg.err')
+      var $success = $('#subscribe .msg.success')
+      var $msg = $('#subscribe .msg')
+      var $submit = $('#subscribe form input[type=submit]')
+
+      var mc_error = function(data) {
+        $err.removeClass('hidden').text(data['error'])
+      }
+
+      var mc_subscribed = function(data) {
+        $success.removeClass('hidden').text("Almost there! Confirmation email is on its way...")
+      }
+
+      var success = function(data) {
+        if ("error" === data['status']) mc_error(data)
+        else mc_subscribed(data)
+      }
+
+      var onSubmit = function(e) {
+        $form = $(this)
+        e.preventDefault();
+        $msg.addClass('hidden')
+        $submit.attr('disabled', 'disabled')
+
+        $.post($form.attr('action'), $form.serialize(), success).
+          fail(function(e, b){alert(b)}).
+          always(function() { $submit.removeAttr('disabled')})
+      }
+
+      $('#subscribe form').submit(onSubmit)
+    });
+  </script>
+</html>
