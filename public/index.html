@@ -80,6 +80,8 @@
 
           <input type="text" name="email" value="" placeholder="email address"/>
           <input type="submit" value="Subscribe" class="btn-primary"/>
+
+          <input type="reset" class="hidden" />
         </form>
 
       </div>
@@ -100,6 +102,7 @@
       var $success = $('#subscribe .msg.success')
       var $msg = $('#subscribe .msg')
       var $submit = $('#subscribe form input[type=submit]')
+      var $reset = $('#subscribe form input[type=reset]')
 
       var mc_error = function(data) {
         $err.removeClass('hidden').text(data['error'])
@@ -107,6 +110,7 @@
 
       var mc_subscribed = function(data) {
         $success.removeClass('hidden').text("Almost there! Confirmation email is on its way...")
+        $reset.click()
       }
 
       var success = function(data) {
